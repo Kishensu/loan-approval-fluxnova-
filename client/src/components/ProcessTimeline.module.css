@@ -1,0 +1,147 @@
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--navy);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brand {
+  padding: 32px 24px 24px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.eyebrow {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--brass-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.brandName {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.nav {
+  flex: 1;
+  padding: 28px 0 12px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.step.active {
+  background: rgba(201, 168, 76, 0.07);
+  border-left: 2px solid var(--brass);
+  padding-left: 22px;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  padding-top: 12px;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(214, 207, 191, 0.12);
+  border: 1.5px solid rgba(214, 207, 191, 0.25);
+  flex-shrink: 0;
+}
+
+.step.active .dot {
+  background: var(--brass);
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+}
+
+.step.done .dot {
+  background: var(--brass-dim);
+  border-color: var(--brass-dim);
+}
+
+.line {
+  flex: 1;
+  width: 1px;
+  min-height: 20px;
+  background: rgba(214, 207, 191, 0.08);
+  margin-top: 5px;
+}
+
+.step.done .line {
+  background: rgba(201, 168, 76, 0.18);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 0 24px;
+}
+
+.idx {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--brass-dim);
+  letter-spacing: 0.05em;
+}
+
+.step.active .idx {
+  color: var(--brass);
+}
+
+.stepLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(245, 240, 232, 0.38);
+  line-height: 1.3;
+}
+
+.step.active .stepLabel {
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.step.done .stepLabel {
+  color: rgba(245, 240, 232, 0.3);
+}
+
+.footer {
+  padding: 16px 24px 28px;
+  border-top: 1px solid rgba(201, 168, 76, 0.12);
+}
+
+.managerLink {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--brass-dim);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.18s;
+  display: block;
+}
+
+.managerLink:hover {
+  color: var(--brass);
+}

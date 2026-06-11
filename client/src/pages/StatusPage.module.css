@@ -1,0 +1,470 @@
+.layout {
+  display: flex;
+  min-height: 100svh;
+}
+
+.main {
+  flex: 1;
+  padding: 48px 56px;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+.docHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--brass);
+  text-transform: uppercase;
+}
+
+.heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.refLine {
+  font-size: 0.825rem;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.refId {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+}
+
+/* ── Error banner ────────────────────────────────────────────────────────── */
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid #dba8a8;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+}
+
+.retryBtn {
+  background: none;
+  border: 1px solid var(--red);
+  color: var(--red);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.retryBtn:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+/* ── Skeleton ────────────────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skLine {
+    animation: shimmer 1.4s ease infinite;
+  }
+}
+
+.skLine {
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--cream-dark) 25%, var(--border) 50%, var(--cream-dark) 75%);
+  background-size: 800px 100%;
+  height: 14px;
+}
+
+.skeletonWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skBadge {
+  width: 90px;
+  height: 22px;
+  border-radius: 20px;
+}
+
+.skCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skShort {
+  max-width: 60%;
+}
+
+/* ── Status badge ────────────────────────────────────────────────────────── */
+
+.badgeRow {
+  margin-bottom: 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.badgePending {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.badgeInReview {
+  background: var(--navy);
+  color: var(--brass-light);
+}
+
+.badgeApproved {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.badgeRejected {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* ── Summary card ────────────────────────────────────────────────────────── */
+
+.summaryCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 600px) {
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sectionIdx {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--brass);
+  letter-spacing: 0.1em;
+}
+
+.sectionTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
+.summaryRows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.825rem;
+  gap: 8px;
+}
+
+.summaryKey {
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+
+.summaryVal {
+  color: var(--navy);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ── Rate result card ────────────────────────────────────────────────────── */
+
+.rateCard {
+  background: var(--navy);
+  border-radius: 8px;
+  padding: 24px;
+  color: var(--cream);
+}
+
+.rateEyebrow {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.rateStats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.rateStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rateStatLabel {
+  font-size: 0.7rem;
+  color: var(--brass-dim);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+.rateStatVal {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.rateNote {
+  font-size: 0.75rem;
+  color: var(--brass-dim);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Decision card ───────────────────────────────────────────────────────── */
+
+.decisionCard {
+  border-radius: 8px;
+  padding: 28px 24px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.decisionApproved {
+  background: var(--green-light);
+  border: 1px solid #b8d4a0;
+}
+
+.decisionRejected {
+  background: var(--red-light);
+  border: 1px solid #dba8a8;
+}
+
+.decisionCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.circleApproved {
+  background: var(--green);
+  color: #fff;
+}
+
+.circleRejected {
+  background: var(--red);
+  color: #fff;
+}
+
+.decisionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.decisionTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+.decisionDesc {
+  font-size: 0.875rem;
+  color: var(--ink-mid);
+  margin: 0;
+}
+
+.decisionDetails {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 4px 24px;
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+.decisionDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.decisionDetailKey {
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  font-family: 'Space Mono', monospace;
+}
+
+.decisionDetailVal {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* ── Polling note ────────────────────────────────────────────────────────── */
+
+.pollingNote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-family: 'Space Mono', monospace;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--brass);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spinner {
+    animation: spin 0.9s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── 404 ─────────────────────────────────────────────────────────────────── */
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 40px 0;
+}
+
+.notFoundCode {
+  font-family: 'Space Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--border-dark);
+  line-height: 1;
+}
+
+.notFoundTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+.notFoundDesc {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.notFoundLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.notFoundLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Back link ───────────────────────────────────────────────────────────── */
+
+.backLink {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.link {
+  font-size: 0.825rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--navy);
+  text-decoration: underline;
+}

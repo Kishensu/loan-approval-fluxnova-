@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fluxnova="http://fluxnova.finos.org/schema/1.0/bpmn" xmlns:modeler="http://fluxnova.finos.org/schema/modeler/1.0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Fluxnova Modeler" exporterVersion="1.2.0" modeler:executionPlatform="Fluxnova Platform" modeler:executionPlatformVersion="2.0.0">
+  <process id="loanApproval" name="Loan Approval" isExecutable="true">
+    <startEvent id="start" name="Application received" />
+    <sequenceFlow id="f1" sourceRef="start" targetRef="creditCheck" />
+    <serviceTask id="creditCheck" name="Credit Check" camunda:type="external" camunda:topic="credit-check" />
+    <sequenceFlow id="f2" sourceRef="creditCheck" targetRef="rateDecision" />
+    <businessRuleTask id="rateDecision" name="Assign Rate" camunda:resultVariable="rateResult" camunda:decisionRef="loanRateDecision" />
+    <sequenceFlow id="f3" sourceRef="rateDecision" targetRef="managerReview" />
+    <userTask id="managerReview" name="Manager Review">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="approved" label="Approve loan?" type="boolean" />
+          <camunda:formField id="reviewNote" label="Review note" type="string" />
+        </camunda:formData>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="f4" sourceRef="managerReview" targetRef="approvalGateway" />
+    <exclusiveGateway id="approvalGateway" name="Approved?" />
+    <sequenceFlow id="f5" sourceRef="approvalGateway" targetRef="approvedEnd">
+      <conditionExpression xsi:type="tFormalExpression">${approved == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f6" sourceRef="approvalGateway" targetRef="rejectedEnd">
+      <conditionExpression xsi:type="tFormalExpression">${approved == false}</conditionExpression>
+    </sequenceFlow>
+    <endEvent id="approvedEnd" name="Loan approved" />
+    <endEvent id="rejectedEnd" name="Loan rejected" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="loanApproval">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="152" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="128" y="125" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="creditCheck_di" bpmnElement="creditCheck">
+        <dc:Bounds x="250" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="rateDecision_di" bpmnElement="rateDecision">
+        <dc:Bounds x="410" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="managerReview_di" bpmnElement="managerReview">
+        <dc:Bounds x="570" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approvalGateway_di" bpmnElement="approvalGateway" isMarkerVisible="true">
+        <dc:Bounds x="735" y="75" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="726" y="132" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approvedEnd_di" bpmnElement="approvedEnd">
+        <dc:Bounds x="852" y="42" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="830" y="85" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="rejectedEnd_di" bpmnElement="rejectedEnd">
+        <dc:Bounds x="852" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="831" y="185" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="188" y="100" />
+        <di:waypoint x="250" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="350" y="100" />
+        <di:waypoint x="410" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="510" y="100" />
+        <di:waypoint x="570" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="670" y="100" />
+        <di:waypoint x="735" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="760" y="75" />
+        <di:waypoint x="760" y="60" />
+        <di:waypoint x="852" y="60" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="788" y="42" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="760" y="125" />
+        <di:waypoint x="760" y="160" />
+        <di:waypoint x="852" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="788" y="140" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,254 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  gap: 48px;
+  padding: 48px 48px 80px;
+  background: var(--cream);
+  min-width: 0;
+}
+
+.formArea {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header */
+.docHeader {
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--brass-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 12px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.subheading {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: rgba(13, 27, 42, 0.55);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Error */
+.errorBanner {
+  background: #fde8e8;
+  border: 1px solid var(--rejected);
+  color: var(--rejected);
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sectionIdx {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--brass);
+  letter-spacing: 0.05em;
+}
+
+.sectionTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(13, 27, 42, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.input,
+.select,
+.textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--navy);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  transition: border-color 0.15s;
+  outline: none;
+  width: 100%;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--brass);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(13, 27, 42, 0.28);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Actions */
+.actions {
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.btnPrimary {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--brass);
+  color: var(--navy);
+  border: none;
+  border-radius: 4px;
+  padding: 12px 32px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--brass-light);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Estimate panel */
+.estimatePanel {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 48px;
+  align-self: flex-start;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px;
+}
+
+.panelEyebrow {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--brass-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.panelTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 16px;
+}
+
+.panelDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+.panelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.panelKey {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: rgba(13, 27, 42, 0.5);
+}
+
+.panelVal {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--navy);
+  text-align: right;
+}
+
+.panelHighlight {
+  color: var(--brass-dim);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.panelNote {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: rgba(13, 27, 42, 0.38);
+  margin: 14px 0 0;
+  line-height: 1.5;
+}
