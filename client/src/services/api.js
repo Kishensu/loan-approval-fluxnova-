@@ -7,3 +7,6 @@ export const getApplicationStatus = (instanceId) => api.get(`/applications/${ins
 export const getManagerTasks = () => api.get('/tasks');
 export const completeReviewTask = (taskId, body) => api.post(`/tasks/${taskId}/complete`, body);
 export const claimTask = (taskId) => api.post(`/tasks/${taskId}/claim`);
+
+export const getOpsStats = () => api.get('/ops/stats');
+export const getProcessHistory = (options = {}) => api.get('/ops/history', { params: options });

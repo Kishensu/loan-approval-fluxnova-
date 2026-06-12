@@ -7,7 +7,7 @@
     <sequenceFlow id="f2" sourceRef="creditCheck" targetRef="rateDecision" />
     <businessRuleTask id="rateDecision" name="Assign Rate" camunda:resultVariable="rateResult" camunda:decisionRef="loanRateDecision" />
     <sequenceFlow id="f3" sourceRef="rateDecision" targetRef="managerReview" />
-    <userTask id="managerReview" name="Manager Review">
+    <userTask id="managerReview" name="Manager Review" camunda:candidateGroups="loanManagers">
       <extensionElements>
         <camunda:formData>
           <camunda:formField id="approved" label="Approve loan?" type="boolean" />

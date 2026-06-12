@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const applicationsRouter = require('./routes/applications');
 const tasksRouter = require('./routes/tasks');
+const opsRouter = require('./routes/ops');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 app.use('/api/applications', applicationsRouter);
 app.use('/api/tasks', tasksRouter);
+app.use('/api/ops', opsRouter);
 
 // Global error handler — catches any unhandled throws (Express 5 auto-catches async errors)
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

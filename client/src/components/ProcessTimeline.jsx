@@ -44,6 +44,7 @@ export default function ProcessTimeline({ activeStep, completedSteps = [] }) {
 
       <footer className={styles.footer}>
         <Link to="/manager" className={styles.managerLink}>Manager Portal →</Link>
+        <Link to="/ops" className={styles.opsLink}>Ops Dashboard →</Link>
       </footer>
     </aside>
   );

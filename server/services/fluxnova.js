@@ -64,7 +64,7 @@ async function getProcessStatus(instanceId) {
 async function getManagerTasks() {
   const res = await fluxnova.get('/task', {
     params: {
-      candidateGroup: 'loan-managers',
+      candidateGroup: 'loanManagers',
       sortBy: 'created',
       sortOrder: 'asc',
     },
