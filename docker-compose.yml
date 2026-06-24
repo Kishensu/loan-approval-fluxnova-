@@ -5,3 +5,57 @@ services:
       - "8080:8080"
     environment:
       - TZ=America/Toronto
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/engine"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  server:
+    build:
+      context: ./server
+      dockerfile: ../Dockerfile.server
+    ports:
+      - "3001:3001"
+    environment:
+      - FLUXNOVA_URL=http://fluxnova:8080/engine-rest
+      - FLUXNOVA_USER=${FLUXNOVA_USER}
+      - FLUXNOVA_PASS=${FLUXNOVA_PASS}
+    depends_on:
+      fluxnova:
+        condition: service_healthy
+    restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      args:
+        VITE_API_URL: /api
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  deployer:
+    image: curlimages/curl:latest
+    depends_on:
+      fluxnova:
+        condition: service_healthy
+    volumes:
+      - ./process:/process
+    environment:
+      - FLUXNOVA_USER=${FLUXNOVA_USER}
+      - FLUXNOVA_PASS=${FLUXNOVA_PASS}
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        curl -u "$FLUXNOVA_USER:$FLUXNOVA_PASS"
+        -F "deployment-name=loan-approval"
+        -F "deploy-changed-only=true"
+        -F "loan-approval.bpmn=@/process/bpmn/loan-approval.bpmn"
+        -F "loan-rate-decision.dmn=@/process/dmn/loan-rate-decision.dmn"
+        http://fluxnova:8080/engine-rest/deployment/create
