@@ -4,6 +4,10 @@ import StatusPage from "./pages/StatusPage";
 import ManagerPage from "./pages/ManagerPage";
 import OpsPage from "./pages/OpsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import HubLayout from "./hub/HubLayout";
+import HubHome from "./hub/index";
+import LearnPage from "./hub/LearnPage";
+import DemoPage from "./hub/DemoPage";
 
 export default function App() {
   return (
@@ -23,6 +27,13 @@ export default function App() {
 
         {/* Ops: manager dashboard with stats and history */}
         <Route path="/ops" element={<OpsPage />} />
+
+        {/* Learning Hub — nested routes */}
+        <Route path="/hub" element={<HubLayout />}>
+          <Route index element={<HubHome />} />
+          <Route path="learn" element={<LearnPage />} />
+          <Route path="demos/:id" element={<DemoPage />} />
+        </Route>
 
         {/* Catch-all */}
         <Route path="*" element={<NotFoundPage />} />
