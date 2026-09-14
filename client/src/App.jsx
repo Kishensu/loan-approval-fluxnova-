@@ -8,6 +8,9 @@ import HubLayout from "./hub/HubLayout";
 import HubHome from "./hub/index";
 import LearnPage from "./hub/LearnPage";
 import DemoPage from "./hub/DemoPage";
+import FormProcessingPage from "./pages/FormProcessingPage";
+import ReviewQueuePage from "./pages/ReviewQueuePage";
+import ResultsPage from "./pages/ResultsPage";
 
 export default function App() {
   return (
@@ -27,6 +30,11 @@ export default function App() {
 
         {/* Ops: manager dashboard with stats and history */}
         <Route path="/ops" element={<OpsPage />} />
+
+        {/* Intelligent Form Processing */}
+        <Route path="/form-processing" element={<FormProcessingPage />} />
+        <Route path="/review-queue"    element={<ReviewQueuePage />} />
+        <Route path="/results"         element={<ResultsPage />} />
 
         {/* Learning Hub — nested routes */}
         <Route path="/hub" element={<HubLayout />}>
