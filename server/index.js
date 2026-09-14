@@ -5,6 +5,9 @@ const cors = require('cors');
 const applicationsRouter = require('./routes/applications');
 const tasksRouter = require('./routes/tasks');
 const opsRouter = require('./routes/ops');
+const formsRouter = require('./routes/forms');
+const reviewRouter = require('./routes/review');
+const resultsRouter = require('./routes/results');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,6 +27,9 @@ app.use((req, res, next) => {
 app.use('/api/applications', applicationsRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/ops', opsRouter);
+app.use('/api/forms', formsRouter);
+app.use('/api/review', reviewRouter);
+app.use('/api/results', resultsRouter);
 
 // Global error handler — catches any unhandled throws (Express 5 auto-catches async errors)
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
@@ -35,8 +41,20 @@ app.listen(PORT, () => {
   console.log(`Server running on :${PORT}`);
   console.log(`Fluxnova engine: ${process.env.FLUXNOVA_URL}`);
 
+  const { deployWorkflows } = require('./deployWorkflows');
+  deployWorkflows().catch((err) => console.error('[DEPLOY] Unexpected error:', err.message));
+
   const creditCheckWorker = require('./workers/creditCheckWorker');
   creditCheckWorker.start();
+
+  const extractionWorker = require('./workers/extractionWorker');
+  extractionWorker.start();
+
+  const calculationWorker = require('./workers/calculationWorker');
+  calculationWorker.start();
+
+  const storeResultWorker = require('./workers/storeResultWorker');
+  storeResultWorker.start();
 });
 
 /*

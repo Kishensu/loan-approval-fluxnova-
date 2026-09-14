@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+             id="triage-request-def"
+             name="Triage Request"
+             namespace="http://camunda.org/schema/1.0/dmn">
+
+  <decision id="triage-request" name="Triage Request">
+    <decisionTable id="triage-request-table" hitPolicy="FIRST">
+
+      <input id="in-requestType" label="Request Type">
+        <inputExpression id="inExpr-requestType" typeRef="string">
+          <text>requestType</text>
+        </inputExpression>
+      </input>
+
+      <input id="in-amount" label="Amount">
+        <inputExpression id="inExpr-amount" typeRef="double">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+
+      <output id="out-category"     label="Category"      name="category"     typeRef="string" />
+      <output id="out-priority"     label="Priority"      name="priority"     typeRef="string" />
+      <output id="out-interestRate" label="Interest Rate" name="interestRate" typeRef="double" />
+      <output id="out-feePercent"   label="Fee Percent"   name="feePercent"   typeRef="double" />
+
+      <!-- loan >= 100,000 -->
+      <rule id="rule1">
+        <inputEntry id="r1-in1"><text>"loan"</text></inputEntry>
+        <inputEntry id="r1-in2"><text>>= 100000</text></inputEntry>
+        <outputEntry id="r1-out1"><text>"major-lending"</text></outputEntry>
+        <outputEntry id="r1-out2"><text>"high"</text></outputEntry>
+        <outputEntry id="r1-out3"><text>0.055</text></outputEntry>
+        <outputEntry id="r1-out4"><text>1.0</text></outputEntry>
+      </rule>
+
+      <!-- loan < 100,000 -->
+      <rule id="rule2">
+        <inputEntry id="r2-in1"><text>"loan"</text></inputEntry>
+        <inputEntry id="r2-in2"><text>&lt; 100000</text></inputEntry>
+        <outputEntry id="r2-out1"><text>"retail-lending"</text></outputEntry>
+        <outputEntry id="r2-out2"><text>"normal"</text></outputEntry>
+        <outputEntry id="r2-out3"><text>0.065</text></outputEntry>
+        <outputEntry id="r2-out4"><text>1.5</text></outputEntry>
+      </rule>
+
+      <!-- refund (any amount) -->
+      <rule id="rule3">
+        <inputEntry id="r3-in1"><text>"refund"</text></inputEntry>
+        <inputEntry id="r3-in2"><text /></inputEntry>
+        <outputEntry id="r3-out1"><text>"refunds"</text></outputEntry>
+        <outputEntry id="r3-out2"><text>"normal"</text></outputEntry>
+        <outputEntry id="r3-out3"><text>0</text></outputEntry>
+        <outputEntry id="r3-out4"><text>2.0</text></outputEntry>
+      </rule>
+
+      <!-- account service (any amount) -->
+      <rule id="rule4">
+        <inputEntry id="r4-in1"><text>"account"</text></inputEntry>
+        <inputEntry id="r4-in2"><text /></inputEntry>
+        <outputEntry id="r4-out1"><text>"servicing"</text></outputEntry>
+        <outputEntry id="r4-out2"><text>"low"</text></outputEntry>
+        <outputEntry id="r4-out3"><text>0</text></outputEntry>
+        <outputEntry id="r4-out4"><text>0</text></outputEntry>
+      </rule>
+
+      <!-- catch-all: unknown type or unrecognised amount -->
+      <rule id="rule5">
+        <inputEntry id="r5-in1"><text /></inputEntry>
+        <inputEntry id="r5-in2"><text /></inputEntry>
+        <outputEntry id="r5-out1"><text>"manual-triage"</text></outputEntry>
+        <outputEntry id="r5-out2"><text>"high"</text></outputEntry>
+        <outputEntry id="r5-out3"><text>0</text></outputEntry>
+        <outputEntry id="r5-out4"><text>0</text></outputEntry>
+      </rule>
+
+    </decisionTable>
+  </decision>
+
+</definitions>

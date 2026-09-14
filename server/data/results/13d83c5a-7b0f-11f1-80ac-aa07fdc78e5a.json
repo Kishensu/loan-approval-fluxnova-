@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "13d83c5a-7b0f-11f1-80ac-aa07fdc78e5a",
+  "documentId": "74c99cf5-1a8f-40c3-8b97-501568461185.png",
+  "originalFilename": "clean-form.png",
+  "submittedAt": "2026-07-08T16:53:31.287-0400",
+  "completedAt": "2026-07-08T20:54:22.211Z",
+  "fields": {
+    "applicantName": {
+      "value": "sarah johnson",
+      "confidence": 1
+    },
+    "requestType": {
+      "value": "$125,000.00",
+      "confidence": 0.9868
+    },
+    "amount": {
+      "value": 125000,
+      "confidence": 0.9947
+    },
+    "requestDate": {
+      "value": "2026-07-08",
+      "confidence": 0.9896
+    },
+    "description": {
+      "value": "commercial property purchase loan",
+      "confidence": 1
+    }
+  },
+  "wasReviewed": false,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}

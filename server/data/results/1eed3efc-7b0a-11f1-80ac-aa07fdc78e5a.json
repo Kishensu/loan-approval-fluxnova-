@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "1eed3efc-7b0a-11f1-80ac-aa07fdc78e5a",
+  "documentId": "2bc1292d-3ed1-4330-a1f5-3abc6d4a3542.png",
+  "originalFilename": "messy-form.png",
+  "submittedAt": "2026-07-08T16:18:02.395-0400",
+  "completedAt": "2026-07-08T20:19:05.886Z",
+  "fields": {
+    "applicantName": {
+      "value": "jhn doe",
+      "confidence": 0.9995
+    },
+    "requestType": {
+      "value": "$42500",
+      "confidence": 0.9699
+    },
+    "amount": {
+      "value": 42500,
+      "confidence": 0.9948
+    },
+    "requestDate": {
+      "value": "7/8/26",
+      "confidence": 1
+    },
+    "description": {
+      "value": "pers loan - home reno",
+      "confidence": 0.9957
+    }
+  },
+  "wasReviewed": false,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}

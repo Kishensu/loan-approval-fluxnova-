@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "ecc26148-7b09-11f1-80ac-aa07fdc78e5a",
+  "documentId": "50ef9981-125c-474f-8b4e-e99db2621e46.pdf",
+  "originalFilename": "test-form-01-loan-major.pdf",
+  "submittedAt": "2026-07-08T16:16:38.228-0400",
+  "completedAt": "2026-07-08T20:17:38.854Z",
+  "fields": {
+    "applicantName": {
+      "value": "margaret chen",
+      "confidence": 0.9998
+    },
+    "requestType": {
+      "value": "$250,000",
+      "confidence": 0.9998
+    },
+    "amount": {
+      "value": 250000,
+      "confidence": 0.9725
+    },
+    "requestDate": {
+      "value": "july 8, 2026",
+      "confidence": 0.9993
+    },
+    "description": {
+      "value": "commercial mortgage for purchase of retail property at 44 king street.",
+      "confidence": 0.9661
+    }
+  },
+  "wasReviewed": false,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}

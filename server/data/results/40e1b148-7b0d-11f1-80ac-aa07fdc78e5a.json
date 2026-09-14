@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "40e1b148-7b0d-11f1-80ac-aa07fdc78e5a",
+  "documentId": "8a33dc83-0f2d-49c7-bd02-f50ab8dd44be.png",
+  "originalFilename": "handwritten-review.png",
+  "submittedAt": "2026-07-08T16:40:27.852-0400",
+  "completedAt": "2026-07-08T20:45:30.637Z",
+  "fields": {
+    "applicantName": {
+      "value": "Robert M",
+      "confidence": 1
+    },
+    "requestType": {
+      "value": "Loan",
+      "confidence": 1
+    },
+    "amount": {
+      "value": "$5000",
+      "confidence": 1
+    },
+    "requestDate": {
+      "value": "01/08/2026",
+      "confidence": 1
+    },
+    "description": {
+      "value": "Car Loan",
+      "confidence": 1
+    }
+  },
+  "wasReviewed": true,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}

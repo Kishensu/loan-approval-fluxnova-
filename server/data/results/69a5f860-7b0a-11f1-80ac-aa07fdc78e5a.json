@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "69a5f860-7b0a-11f1-80ac-aa07fdc78e5a",
+  "documentId": "d7387171-9c7f-48f9-8ba0-d32b0b8d3ad3.pdf",
+  "originalFilename": "test-form-04-messy-handwritten.pdf",
+  "submittedAt": "2026-07-08T16:20:07.758-0400",
+  "completedAt": "2026-07-08T20:21:08.933Z",
+  "fields": {
+    "applicantName": {
+      "value": "robert delgado",
+      "confidence": 0.9996
+    },
+    "requestType": {
+      "value": "$3,750",
+      "confidence": 0.9514
+    },
+    "amount": {
+      "value": 3750,
+      "confidence": 0.9875
+    },
+    "requestDate": {
+      "value": "july 6, 2026",
+      "confidence": 0.9988
+    },
+    "description": {
+      "value": "close old savings acct and transfer balance to chequiry",
+      "confidence": 0.9295
+    }
+  },
+  "wasReviewed": false,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}

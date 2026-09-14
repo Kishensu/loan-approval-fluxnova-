@@ -12,6 +12,20 @@ services:
       retries: 15
       start_period: 30s
 
+  docai-service:
+    build: ./docai-service
+    ports:
+      - "8000:8000"
+    healthcheck:
+      # /health returns 200 immediately (model loads in background thread).
+      # python:3.11-slim has no curl, so we use urllib from the std lib.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    restart: unless-stopped
+
   server:
     build:
       context: ./server
@@ -22,8 +36,15 @@ services:
       - FLUXNOVA_URL=http://fluxnova:8080/engine-rest
       - FLUXNOVA_USER=${FLUXNOVA_USER}
       - FLUXNOVA_PASS=${FLUXNOVA_PASS}
+      - DOCAI_SERVICE_URL=http://docai-service:8000
+      - CONFIDENCE_THRESHOLD=0.85
+    volumes:
+      - uploads:/app/uploads
+      - results:/app/data/results
     depends_on:
       fluxnova:
+        condition: service_healthy
+      docai-service:
         condition: service_healthy
     restart: unless-stopped
 
@@ -46,6 +67,7 @@ services:
         condition: service_healthy
     volumes:
       - ./process:/process
+      - ./workflows:/workflows
     environment:
       - FLUXNOVA_USER=${FLUXNOVA_USER}
       - FLUXNOVA_PASS=${FLUXNOVA_PASS}
@@ -59,3 +81,14 @@ services:
         -F "loan-approval.bpmn=@/process/bpmn/loan-approval.bpmn"
         -F "loan-rate-decision.dmn=@/process/dmn/loan-rate-decision.dmn"
         http://fluxnova:8080/engine-rest/deployment/create
+        &&
+        curl -u "$FLUXNOVA_USER:$FLUXNOVA_PASS"
+        -F "deployment-name=intelligent-form-processing"
+        -F "deploy-changed-only=true"
+        -F "intelligent-form-processing.bpmn=@/workflows/intelligent-form-processing.bpmn"
+        -F "triage-request.dmn=@/workflows/triage-request.dmn"
+        http://fluxnova:8080/engine-rest/deployment/create
+
+volumes:
+  uploads:
+  results:

@@ -1,12 +1,14 @@
 FROM node:20-alpine
-
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+COPY server/package*.json ./
+RUN npm ci --only=production
 
-COPY . .
+COPY server/ ./
+COPY process/ ./process/
+COPY workflows/ ./workflows/
+
+RUN mkdir -p /app/uploads /app/data/results
 
 EXPOSE 3001
-
 CMD ["node", "index.js"]

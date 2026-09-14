@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="Camunda Modeler" exporterVersion="4.12.0">
+
+  <process id="intelligent-form-processing" name="Intelligent Form Processing" isExecutable="true">
+
+    <startEvent id="start" name="Form Uploaded">
+      <outgoing>f1</outgoing>
+    </startEvent>
+
+    <sequenceFlow id="f1" sourceRef="start" targetRef="aiExtraction" />
+
+    <!-- External task: AI field extraction via Donut DocVQA -->
+    <serviceTask id="aiExtraction" name="AI Field Extraction"
+                 camunda:type="external" camunda:topic="form-extraction">
+      <incoming>f1</incoming>
+      <outgoing>f2</outgoing>
+    </serviceTask>
+
+    <sequenceFlow id="f2" sourceRef="aiExtraction" targetRef="confidenceGateway" />
+
+    <!-- Route to human review if any field confidence < threshold -->
+    <exclusiveGateway id="confidenceGateway" name="All fields confident?" default="f4">
+      <incoming>f2</incoming>
+      <outgoing>f3</outgoing>
+      <outgoing>f4</outgoing>
+    </exclusiveGateway>
+
+    <!-- Straight-through path: all fields high confidence -->
+    <sequenceFlow id="f3" sourceRef="confidenceGateway" targetRef="mergeGateway">
+      <conditionExpression xsi:type="tFormalExpression">${needsReview == false}</conditionExpression>
+    </sequenceFlow>
+
+    <!-- Default path: one or more fields need human review -->
+    <sequenceFlow id="f4" sourceRef="confidenceGateway" targetRef="manual-field-review" />
+
+    <userTask id="manual-field-review" name="Manual Field Review"
+              camunda:candidateGroups="form-review">
+      <incoming>f4</incoming>
+      <outgoing>f5</outgoing>
+    </userTask>
+
+    <sequenceFlow id="f5" sourceRef="manual-field-review" targetRef="mergeGateway" />
+
+    <exclusiveGateway id="mergeGateway">
+      <incoming>f3</incoming>
+      <incoming>f5</incoming>
+      <outgoing>f6</outgoing>
+    </exclusiveGateway>
+
+    <sequenceFlow id="f6" sourceRef="mergeGateway" targetRef="triageRequest" />
+
+    <!-- DMN decision: classify request and determine rate/fee.
+         singleResult stores the matched row as a Java Map in triageResult.
+         The inputOutput block spreads individual columns as process variables. -->
+    <businessRuleTask id="triageRequest" name="Triage Request"
+                      camunda:decisionRef="triage-request"
+                      camunda:decisionRefBinding="latest"
+                      camunda:mapDecisionResult="singleResult"
+                      camunda:resultVariable="triageResult">
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="category">${triageResult.get('category')}</camunda:outputParameter>
+          <camunda:outputParameter name="priority">${triageResult.get('priority')}</camunda:outputParameter>
+          <camunda:outputParameter name="interestRate">${triageResult.get('interestRate')}</camunda:outputParameter>
+          <camunda:outputParameter name="feePercent">${triageResult.get('feePercent')}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>f6</incoming>
+      <outgoing>f7</outgoing>
+    </businessRuleTask>
+
+    <sequenceFlow id="f7" sourceRef="triageRequest" targetRef="performCalculation" />
+
+    <serviceTask id="performCalculation" name="Perform Calculation"
+                 camunda:type="external" camunda:topic="request-calculation">
+      <incoming>f7</incoming>
+      <outgoing>f8</outgoing>
+    </serviceTask>
+
+    <sequenceFlow id="f8" sourceRef="performCalculation" targetRef="storeResult" />
+
+    <serviceTask id="storeResult" name="Store Result"
+                 camunda:type="external" camunda:topic="store-result">
+      <incoming>f8</incoming>
+      <outgoing>f9</outgoing>
+    </serviceTask>
+
+    <sequenceFlow id="f9" sourceRef="storeResult" targetRef="end" />
+
+    <endEvent id="end" name="Processing Complete">
+      <incoming>f9</incoming>
+    </endEvent>
+
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="intelligent-form-processing">
+
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="152" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="128" y="205" width="84" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="aiExtraction_di" bpmnElement="aiExtraction">
+        <dc:Bounds x="240" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="confidenceGateway_di" bpmnElement="confidenceGateway" isMarkerVisible="true">
+        <dc:Bounds x="405" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="122" width="80" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="mergeGateway_di" bpmnElement="mergeGateway" isMarkerVisible="true">
+        <dc:Bounds x="575" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="manual-field-review_di" bpmnElement="manual-field-review">
+        <dc:Bounds x="475" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="triageRequest_di" bpmnElement="triageRequest">
+        <dc:Bounds x="685" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="performCalculation_di" bpmnElement="performCalculation">
+        <dc:Bounds x="845" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="storeResult_di" bpmnElement="storeResult">
+        <dc:Bounds x="1005" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="1167" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1141" y="205" width="88" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="188" y="180" />
+        <di:waypoint x="240" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="340" y="180" />
+        <di:waypoint x="405" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="455" y="180" />
+        <di:waypoint x="575" y="180" />
+        <bpmndi:BPMNLabel><dc:Bounds x="478" y="162" width="74" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="430" y="205" />
+        <di:waypoint x="430" y="300" />
+        <di:waypoint x="475" y="300" />
+        <bpmndi:BPMNLabel><dc:Bounds x="434" y="250" width="38" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="575" y="300" />
+        <di:waypoint x="600" y="300" />
+        <di:waypoint x="600" y="205" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="625" y="180" />
+        <di:waypoint x="685" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="785" y="180" />
+        <di:waypoint x="845" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="945" y="180" />
+        <di:waypoint x="1005" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
+        <di:waypoint x="1105" y="180" />
+        <di:waypoint x="1167" y="180" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,36 @@
+{
+  "processInstanceId": "1cc33d68-7b0b-11f1-80ac-aa07fdc78e5a",
+  "documentId": "073bd3ea-5289-4864-bf1f-f99f6926100b.pdf",
+  "originalFilename": "test-form-02-loan-retail.pdf",
+  "submittedAt": "2026-07-08T16:25:08.262-0400",
+  "completedAt": "2026-07-08T20:26:12.033Z",
+  "fields": {
+    "applicantName": {
+      "value": "daniel okafor",
+      "confidence": 1
+    },
+    "requestType": {
+      "value": "$45,000",
+      "confidence": 0.9999
+    },
+    "amount": {
+      "value": 45000,
+      "confidence": 0.9975
+    },
+    "requestDate": {
+      "value": "2026-07-08",
+      "confidence": 1
+    },
+    "description": {
+      "value": "auto loan for used vehicle purchase, 60 month term prefe",
+      "confidence": 0.9977
+    }
+  },
+  "wasReviewed": false,
+  "category": "manual-triage",
+  "priority": "high",
+  "calculationResult": {
+    "type": "flat",
+    "flatProcessingFee": 25
+  }
+}
