@@ -20,27 +20,47 @@ async function isDeployed(key) {
 }
 
 async function deploy(deploymentName, files) {
+  // Verify all files exist before building the form
+  for (const [fieldName, filePath] of Object.entries(files)) {
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`Resource file not found: ${filePath} (field: ${fieldName})`);
+    }
+    console.log(`[DEPLOY] Found ${fieldName} at ${filePath} (${fs.statSync(filePath).size} bytes)`);
+  }
+
   const fd = new FormData();
   fd.append('deployment-name', deploymentName);
   fd.append('deploy-changed-only', 'true');
-  for (const [name, filePath] of Object.entries(files)) {
-    fd.append(name, fs.createReadStream(filePath));
+  for (const [fieldName, filePath] of Object.entries(files)) {
+    fd.append(fieldName, fs.createReadStream(filePath));
   }
-  await axios.post(`${ENGINE}/deployment/create`, fd, {
-    auth,
-    headers: fd.getHeaders(),
-  });
-  console.log(`[DEPLOY] "${deploymentName}" deployed.`);
+
+  try {
+    await axios.post(`${ENGINE}/deployment/create`, fd, {
+      auth,
+      headers: fd.getHeaders(),
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+    });
+    console.log(`[DEPLOY] "${deploymentName}" deployed successfully.`);
+  } catch (err) {
+    const detail = JSON.stringify(err.response?.data) || err.message;
+    throw new Error(`Camunda rejected "${deploymentName}" (${err.response?.status}): ${detail}`);
+  }
 }
 
 async function deployWorkflows() {
   const processDir   = path.join(__dirname, 'process');
   const workflowsDir = path.join(__dirname, 'workflows');
 
-  // Retry up to 12 times (2 min) waiting for Camunda to be ready
+  console.log(`[DEPLOY] processDir: ${processDir} exists=${fs.existsSync(processDir)}`);
+  console.log(`[DEPLOY] workflowsDir: ${workflowsDir} exists=${fs.existsSync(workflowsDir)}`);
+
+  // Wait for Camunda to be ready (up to 2 min)
   for (let attempt = 1; attempt <= 12; attempt++) {
     try {
       await axios.get(`${ENGINE}/engine`, { auth, timeout: 5000 });
+      console.log('[DEPLOY] Camunda is ready.');
       break;
     } catch {
       if (attempt === 12) {
@@ -52,22 +72,27 @@ async function deployWorkflows() {
     }
   }
 
-  if (!await isDeployed('loan-approval')) {
-    await deploy('loan-approval', {
-      'loan-approval.bpmn':        path.join(processDir, 'bpmn', 'loan-approval.bpmn'),
-      'loan-rate-decision.dmn':    path.join(processDir, 'dmn',  'loan-rate-decision.dmn'),
-    });
-  } else {
-    console.log('[DEPLOY] loan-approval already deployed.');
-  }
-
-  if (!await isDeployed('intelligent-form-processing')) {
-    await deploy('intelligent-form-processing', {
+  const deployments = [
+    ['loan-approval', {
+      'loan-approval.bpmn':     path.join(processDir, 'bpmn', 'loan-approval.bpmn'),
+      'loan-rate-decision.dmn': path.join(processDir, 'dmn',  'loan-rate-decision.dmn'),
+    }],
+    ['intelligent-form-processing', {
       'intelligent-form-processing.bpmn': path.join(workflowsDir, 'intelligent-form-processing.bpmn'),
       'triage-request.dmn':               path.join(workflowsDir, 'triage-request.dmn'),
-    });
-  } else {
-    console.log('[DEPLOY] intelligent-form-processing already deployed.');
+    }],
+  ];
+
+  for (const [name, files] of deployments) {
+    try {
+      if (await isDeployed(name)) {
+        console.log(`[DEPLOY] "${name}" already deployed — skipping.`);
+      } else {
+        await deploy(name, files);
+      }
+    } catch (err) {
+      console.error(`[DEPLOY] ERROR deploying "${name}": ${err.message}`);
+    }
   }
 }
 
