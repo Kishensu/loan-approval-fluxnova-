@@ -16,8 +16,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Redirect root to apply */}
-        <Route path="/" element={<Navigate to="/apply" replace />} />
+        {/* Redirect root to hub */}
+        <Route path="/" element={<Navigate to="/hub" replace />} />
 
         {/* Applicant: submit a loan application */}
         <Route path="/apply" element={<ApplyPage />} />
