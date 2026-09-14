@@ -584,14 +584,26 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 
+@media (max-width: 640px) {
+  .nav {
+    height: auto;
+    min-height: 48px;
+    padding: 8px 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .navTitle { font-size: 0.82rem; }
+
+  .sectionHead { flex-wrap: wrap; gap: 10px; }
+
+  .filterPills { flex-wrap: wrap; }
+}
+
 @media (max-width: 620px) {
   .content {
     padding: 24px 20px 60px;
     gap: 48px;
-  }
-
-  .nav {
-    padding: 0 20px;
   }
 
   .queueHeader,
@@ -602,4 +614,8 @@
   .hideOnMobile {
     display: none;
   }
+}
+
+@media (max-width: 420px) {
+  .statsGrid { grid-template-columns: 1fr; }
 }

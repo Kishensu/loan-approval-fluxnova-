@@ -424,8 +424,38 @@
 
 .btnGhost:hover { border-color: var(--navy); color: var(--navy); }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
+  .headerInner {
+    padding: 20px 16px 18px;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .title { font-size: 1.35rem; }
+
+  .headerLinks {
+    padding-top: 0;
+    flex-wrap: wrap;
+  }
+
+  .main { padding: 24px 16px 48px; }
+
+  .dropZone { padding: 40px 20px; }
+
+  .sampleRow { gap: 8px; }
+
+  .pipelineHeader { padding: 14px 16px; }
+
+  .reviewBanner { margin: 0 16px 16px; }
+
+  .resultCard { padding: 16px; }
+
+  .resultActions { flex-direction: column; }
+
+  .btnPrimary,
+  .btnGhost { width: 100%; text-align: center; box-sizing: border-box; }
+
   .trackerLine { display: none; }
-  .tracker { flex-wrap: wrap; gap: 16px; justify-content: center; }
+  .tracker { flex-wrap: wrap; gap: 16px; justify-content: center; padding: 20px 16px; }
   .trackerItem { flex: 0 0 auto; min-width: 64px; }
 }

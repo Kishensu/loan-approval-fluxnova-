@@ -50,3 +50,10 @@
   color: var(--brass);
   border-color: var(--brass);
 }
+
+@media (max-width: 640px) {
+  .page { padding: 24px 20px; }
+  .code { font-size: 56px; }
+  .heading { font-size: 22px; }
+  .desc { font-size: 14px; }
+}

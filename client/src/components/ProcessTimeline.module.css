@@ -181,3 +181,7 @@
   color: var(--brass);
   opacity: 1;
 }
+
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+}

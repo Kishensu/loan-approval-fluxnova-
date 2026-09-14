@@ -88,3 +88,26 @@
   .withDrawer { grid-template-columns: 1fr; }
   .drawer { position: static; max-height: none; }
 }
+
+@media (max-width: 640px) {
+  .headerInner {
+    padding: 20px 16px 18px;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .title { font-size: 1.3rem; }
+
+  .headerLinks { padding-top: 0; }
+
+  .main { padding: 20px 16px 48px; }
+
+  .drawer { padding: 16px; }
+
+  .drawerField {
+    grid-template-columns: max-content 1fr;
+    gap: 4px 8px;
+  }
+
+  .drawerConfidence { display: none; }
+}

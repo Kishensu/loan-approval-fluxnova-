@@ -403,6 +403,28 @@
   }
 }
 
+@media (max-width: 640px) {
+  .layout { flex-direction: column; }
+
+  .main {
+    padding: 24px 20px 60px;
+    max-width: 100%;
+  }
+
+  .heading { font-size: 1.35rem; }
+
+  .docHeader { flex-wrap: wrap; gap: 10px; }
+
+  .cardRow1 { flex-wrap: wrap; gap: 4px; }
+
+  .cardRow2 { flex-wrap: wrap; }
+
+  .decisionActions { flex-direction: column; }
+
+  .btnReject,
+  .btnApprove { flex: none; width: 100%; }
+}
+
 .sectionHeader {
   display: flex;
   align-items: center;

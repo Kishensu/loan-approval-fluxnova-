@@ -177,12 +177,6 @@
   gap: 32px;
 }
 
-@media (max-width: 600px) {
-  .summaryGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .summaryCol {
   display: flex;
   flex-direction: column;
@@ -467,4 +461,24 @@
 .link:hover {
   color: var(--navy);
   text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .layout { flex-direction: column; }
+
+  .main { padding: 24px 20px 60px; }
+
+  .heading { font-size: 1.35rem; }
+
+  .summaryGrid { grid-template-columns: 1fr; }
+
+  .summaryCard { padding: 16px; }
+
+  .rateCard { padding: 16px; }
+
+  .decisionCard {
+    padding: 20px 16px;
+    flex-direction: column;
+    gap: 14px;
+  }
 }

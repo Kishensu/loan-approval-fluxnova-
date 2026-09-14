@@ -121,3 +121,23 @@
   .panelSplit { grid-template-columns: 1fr; }
   .imagePane { border-right: none; border-bottom: 1px solid rgba(26,37,54,.08); }
 }
+
+@media (max-width: 640px) {
+  .headerInner {
+    padding: 20px 16px 18px;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .title { font-size: 1.3rem; }
+
+  .headerLinks { padding-top: 0; }
+
+  .main { padding: 20px 16px 48px; }
+
+  .selectPrompt { padding: 48px 20px; }
+
+  .fieldPane { padding: 16px; }
+
+  .imagePane { padding: 14px; }
+}

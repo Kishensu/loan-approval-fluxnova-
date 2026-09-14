@@ -252,3 +252,25 @@
   margin: 14px 0 0;
   line-height: 1.5;
 }
+
+@media (max-width: 640px) {
+  .layout { flex-direction: column; }
+
+  .main {
+    padding: 24px 20px 60px;
+    gap: 32px;
+    flex-direction: column;
+  }
+
+  .heading { font-size: 28px; }
+
+  .grid2 { grid-template-columns: 1fr; }
+
+  .estimatePanel {
+    width: 100%;
+    position: static;
+    align-self: auto;
+  }
+
+  .btnPrimary { width: 100%; }
+}
