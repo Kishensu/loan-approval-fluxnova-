@@ -8,7 +8,7 @@
              targetNamespace="http://bpmn.io/schema/bpmn"
              exporter="Camunda Modeler" exporterVersion="4.12.0">
 
-  <process id="intelligent-form-processing" name="Intelligent Form Processing" isExecutable="true">
+  <process id="intelligent-form-processing" name="Intelligent Form Processing" isExecutable="true" camunda:historyTimeToLive="P30D">
 
     <startEvent id="start" name="Form Uploaded">
       <outgoing>f1</outgoing>
