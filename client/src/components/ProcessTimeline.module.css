@@ -245,5 +245,18 @@
     text-align: center;
   }
 
-  .footer { display: none; }
+  .footer {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 10px 20px 14px;
+    border-top: 1px solid rgba(201, 168, 76, 0.12);
+    flex-wrap: wrap;
+  }
+
+  .managerLink,
+  .opsLink,
+  .hubLink {
+    margin-top: 0;
+  }
 }
