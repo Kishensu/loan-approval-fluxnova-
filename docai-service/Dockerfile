@@ -18,9 +18,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # WARNING: downloads ~1.5 GB (Donut weights + tokenizer + torch deps).
 #          First build takes several minutes and requires internet access.
 RUN python -c "\
+import torch; \
 from transformers import DonutProcessor, VisionEncoderDecoderModel; \
 DonutProcessor.from_pretrained('naver-clova-ix/donut-base-finetuned-docvqa'); \
-VisionEncoderDecoderModel.from_pretrained('naver-clova-ix/donut-base-finetuned-docvqa')"
+VisionEncoderDecoderModel.from_pretrained('naver-clova-ix/donut-base-finetuned-docvqa', torch_dtype=torch.float16, low_cpu_mem_usage=True)"
 
 COPY . .
 

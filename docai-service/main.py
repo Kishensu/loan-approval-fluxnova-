@@ -29,7 +29,12 @@ def _load_model():
     try:
         print(f"[docai] Loading {MODEL_NAME} in background…")
         _processor = DonutProcessor.from_pretrained(MODEL_NAME)
-        _model = VisionEncoderDecoderModel.from_pretrained(MODEL_NAME)
+        # float16 + low_cpu_mem_usage halves peak RAM (~700 MB vs ~1.4 GB)
+        _model = VisionEncoderDecoderModel.from_pretrained(
+            MODEL_NAME,
+            torch_dtype=torch.float16,
+            low_cpu_mem_usage=True,
+        )
         _model.eval()
         print("[docai] Model ready.")
     except Exception as exc:
@@ -86,7 +91,7 @@ def run_docvqa(image: Image.Image, question: str) -> tuple[str, float]:
         task_prompt, add_special_tokens=False, return_tensors="pt"
     ).input_ids
 
-    pixel_values = _processor(image, return_tensors="pt").pixel_values
+    pixel_values = _processor(image, return_tensors="pt").pixel_values.to(_model.dtype)
 
     with torch.no_grad():
         outputs = _model.generate(
