@@ -73,9 +73,9 @@ async function deployWorkflows() {
   }
 
   const deployments = [
+    // Rate logic moved to rateDecisionWorker.js (external task) — no DMN needed
     ['loan-approval', {
-      'loan-approval.bpmn':     path.join(processDir, 'bpmn', 'loan-approval.bpmn'),
-      'loan-rate-decision.dmn': path.join(processDir, 'dmn',  'loan-rate-decision.dmn'),
+      'loan-approval.bpmn': path.join(processDir, 'bpmn', 'loan-approval.bpmn'),
     }],
     // Triage logic moved to triageWorker.js (external task) — no DMN needed
     ['intelligent-form-processing', {

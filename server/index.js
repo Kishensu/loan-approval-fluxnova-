@@ -47,6 +47,9 @@ app.listen(PORT, () => {
   const creditCheckWorker = require('./workers/creditCheckWorker');
   creditCheckWorker.start();
 
+  const rateDecisionWorker = require('./workers/rateDecisionWorker');
+  rateDecisionWorker.start();
+
   const extractionWorker = require('./workers/extractionWorker');
   extractionWorker.start();
 
