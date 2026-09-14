@@ -183,5 +183,67 @@
 }
 
 @media (max-width: 640px) {
-  .sidebar { display: none; }
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    flex-direction: column;
+  }
+
+  .brand {
+    padding: 14px 20px 12px;
+  }
+
+  .brandName { font-size: 15px; }
+
+  .nav {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar { display: none; }
+
+  .step {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 14px 12px;
+    gap: 4px;
+    min-width: 80px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .step.active {
+    background: rgba(201, 168, 76, 0.07);
+    border-left: none;
+    padding-left: 14px;
+    border-bottom: 2px solid var(--brass);
+  }
+
+  .track {
+    flex-direction: row;
+    width: auto;
+    padding-top: 0;
+    align-self: auto;
+    align-items: center;
+    padding: 0;
+  }
+
+  .line { display: none; }
+
+  .text {
+    padding: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stepLabel {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .footer { display: none; }
 }
