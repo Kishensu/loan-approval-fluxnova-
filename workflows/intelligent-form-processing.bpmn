@@ -56,25 +56,12 @@
 
     <sequenceFlow id="f6" sourceRef="mergeGateway" targetRef="triageRequest" />
 
-    <!-- DMN decision: classify request and determine rate/fee.
-         singleResult stores the matched row as a Java Map in triageResult.
-         The inputOutput block spreads individual columns as process variables. -->
-    <businessRuleTask id="triageRequest" name="Triage Request"
-                      camunda:decisionRef="triage-request"
-                      camunda:decisionRefBinding="latest"
-                      camunda:mapDecisionResult="singleResult"
-                      camunda:resultVariable="triageResult">
-      <extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="category">${triageResult.get('category')}</camunda:outputParameter>
-          <camunda:outputParameter name="priority">${triageResult.get('priority')}</camunda:outputParameter>
-          <camunda:outputParameter name="interestRate">${triageResult.get('interestRate')}</camunda:outputParameter>
-          <camunda:outputParameter name="feePercent">${triageResult.get('feePercent')}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </extensionElements>
+    <!-- Triage: external task worker applies the same rules as the DMN table -->
+    <serviceTask id="triageRequest" name="Triage Request"
+                 camunda:type="external" camunda:topic="request-triage">
       <incoming>f6</incoming>
       <outgoing>f7</outgoing>
-    </businessRuleTask>
+    </serviceTask>
 
     <sequenceFlow id="f7" sourceRef="triageRequest" targetRef="performCalculation" />
 

@@ -77,9 +77,9 @@ async function deployWorkflows() {
       'loan-approval.bpmn':     path.join(processDir, 'bpmn', 'loan-approval.bpmn'),
       'loan-rate-decision.dmn': path.join(processDir, 'dmn',  'loan-rate-decision.dmn'),
     }],
+    // Triage logic moved to triageWorker.js (external task) — no DMN needed
     ['intelligent-form-processing', {
       'intelligent-form-processing.bpmn': path.join(workflowsDir, 'intelligent-form-processing.bpmn'),
-      'triage-request.dmn':               path.join(workflowsDir, 'triage-request.dmn'),
     }],
   ];
 

@@ -50,6 +50,9 @@ app.listen(PORT, () => {
   const extractionWorker = require('./workers/extractionWorker');
   extractionWorker.start();
 
+  const triageWorker = require('./workers/triageWorker');
+  triageWorker.start();
+
   const calculationWorker = require('./workers/calculationWorker');
   calculationWorker.start();
 
