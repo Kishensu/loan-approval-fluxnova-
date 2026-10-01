@@ -40,15 +40,18 @@ async function processTask(task) {
   const documentId = vars.documentId?.value;
 
   if (!documentId) {
+    console.error('[EXTRACTION] Task missing documentId variable');
     await reportFailure(task, new Error('Missing documentId variable'));
     return;
   }
 
   const filePath = path.join(UPLOADS_DIR, documentId);
   if (!fs.existsSync(filePath)) {
+    console.error(`[EXTRACTION] Upload not found: ${documentId} (uploads dir: ${UPLOADS_DIR})`);
     await reportFailure(task, new Error(`Upload not found: ${documentId}`));
     return;
   }
+  console.log(`[EXTRACTION] Processing file: ${documentId}`);
 
   try {
     const image_base64 = fs.readFileSync(filePath).toString('base64');
