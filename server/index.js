@@ -40,6 +40,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 app.listen(PORT, () => {
   console.log(`Server running on :${PORT}`);
   console.log(`Fluxnova engine: ${process.env.FLUXNOVA_URL}`);
+  console.log(`DocAI service:   ${process.env.DOCAI_URL || process.env.DOCAI_SERVICE_URL || '(none — will use localhost:8000)'}`);
+
 
   const { deployWorkflows } = require('./deployWorkflows');
   deployWorkflows().catch((err) => console.error('[DEPLOY] Unexpected error:', err.message));

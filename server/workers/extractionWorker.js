@@ -164,7 +164,7 @@ async function poll() {
     });
     const tasks = res.data;
     if (tasks.length === 0) return;
-    // Sequential: AI inference is CPU-bound — no benefit in parallelising
+    console.log(`[EXTRACTION] Picked up ${tasks.length} task(s)`);
     for (const task of tasks) await processTask(task);
   } catch (err) {
     if (['ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT'].includes(err.code)) {
