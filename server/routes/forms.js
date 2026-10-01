@@ -43,6 +43,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
   const documentId = req.file.filename; // uuid + original extension
   const originalFilename = req.file.originalname;
+  const savedPath = path.join(UPLOADS_DIR, documentId);
+  console.log(`[UPLOAD] Saved ${documentId} → ${savedPath} exists=${fs.existsSync(savedPath)}`);
 
   try {
     const result = await fluxnova.post(

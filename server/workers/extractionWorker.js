@@ -47,7 +47,8 @@ async function processTask(task) {
 
   const filePath = path.join(UPLOADS_DIR, documentId);
   if (!fs.existsSync(filePath)) {
-    console.error(`[EXTRACTION] Upload not found: ${documentId} — failing immediately (no retry)`);
+    const dirContents = fs.existsSync(UPLOADS_DIR) ? fs.readdirSync(UPLOADS_DIR) : ['<dir missing>'];
+    console.error(`[EXTRACTION] Upload not found: ${documentId} | uploads dir: ${UPLOADS_DIR} | contents: [${dirContents.join(', ')}]`);
     try {
       await engine.post(`/external-task/${task.id}/failure`, {
         workerId: WORKER_ID,
