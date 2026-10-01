@@ -85,11 +85,7 @@ async function deployWorkflows() {
 
   for (const [name, files] of deployments) {
     try {
-      if (await isDeployed(name)) {
-        console.log(`[DEPLOY] "${name}" already deployed — skipping.`);
-      } else {
-        await deploy(name, files);
-      }
+      await deploy(name, files);
     } catch (err) {
       console.error(`[DEPLOY] ERROR deploying "${name}": ${err.message}`);
     }
