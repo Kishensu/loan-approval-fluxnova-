@@ -47,8 +47,17 @@ async function processTask(task) {
 
   const filePath = path.join(UPLOADS_DIR, documentId);
   if (!fs.existsSync(filePath)) {
-    console.error(`[EXTRACTION] Upload not found: ${documentId} (uploads dir: ${UPLOADS_DIR})`);
-    await reportFailure(task, new Error(`Upload not found: ${documentId}`));
+    console.error(`[EXTRACTION] Upload not found: ${documentId} — failing immediately (no retry)`);
+    try {
+      await engine.post(`/external-task/${task.id}/failure`, {
+        workerId: WORKER_ID,
+        errorMessage: `Upload not found: ${documentId}`,
+        retries: 0,
+        retryTimeout: 0,
+      });
+    } catch (e) {
+      console.error('[EXTRACTION] Could not report missing-file failure:', e.message);
+    }
     return;
   }
   console.log(`[EXTRACTION] Processing file: ${documentId}`);

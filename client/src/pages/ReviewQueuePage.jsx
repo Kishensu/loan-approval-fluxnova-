@@ -70,10 +70,15 @@ function ReviewPanel({ task, onSubmitted }) {
               src={`/api/forms/document/${task.documentId}`}
               alt="Form"
               className={styles.formImage}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
             />
-          ) : (
-            <div className={styles.noImage}>No image available</div>
-          )}
+          ) : null}
+          <div className={styles.noImage} style={{ display: task.documentId ? 'none' : 'flex' }}>
+            No image available
+          </div>
           <p className={styles.imageCaption}>{task.originalFilename}</p>
         </div>
 
