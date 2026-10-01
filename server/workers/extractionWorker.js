@@ -1,17 +1,14 @@
 require('dotenv').config();
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
 const { FIELDS } = require('../config/formFields');
 
 const ENGINE = process.env.FLUXNOVA_URL || 'http://localhost:8080/engine-rest';
 const DOCAI_URL = process.env.DOCAI_URL || process.env.DOCAI_SERVICE_URL || 'http://localhost:8000';
 const CONFIDENCE_THRESHOLD = parseFloat(process.env.CONFIDENCE_THRESHOLD || '0.85');
-const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
 const WORKER_ID = 'extraction-worker-1';
 const TOPIC = 'form-extraction';
 const POLL_INTERVAL_MS = 3000;
-const LOCK_DURATION_MS = 120000; // AI inference can take up to 2 min per form on CPU
+const LOCK_DURATION_MS = 120000;
 
 const engine = axios.create({
   baseURL: ENGINE,
@@ -37,7 +34,8 @@ async function reportFailure(task, err) {
 
 async function processTask(task) {
   const vars = task.variables || {};
-  const documentId = vars.documentId?.value;
+  const documentId     = vars.documentId?.value;
+  const documentBase64 = vars.documentBase64?.value;
 
   if (!documentId) {
     console.error('[EXTRACTION] Task missing documentId variable');
@@ -45,39 +43,35 @@ async function processTask(task) {
     return;
   }
 
-  const filePath = path.join(UPLOADS_DIR, documentId);
-  if (!fs.existsSync(filePath)) {
-    const dirContents = fs.existsSync(UPLOADS_DIR) ? fs.readdirSync(UPLOADS_DIR) : ['<dir missing>'];
-    console.error(`[EXTRACTION] Upload not found: ${documentId} | uploads dir: ${UPLOADS_DIR} | contents: [${dirContents.join(', ')}]`);
+  if (!documentBase64) {
+    console.error(`[EXTRACTION] Task missing documentBase64 for ${documentId} — old task before base64 migration?`);
     try {
       await engine.post(`/external-task/${task.id}/failure`, {
         workerId: WORKER_ID,
-        errorMessage: `Upload not found: ${documentId}`,
+        errorMessage: `Missing documentBase64 for ${documentId}`,
         retries: 0,
         retryTimeout: 0,
       });
     } catch (e) {
-      console.error('[EXTRACTION] Could not report missing-file failure:', e.message);
+      console.error('[EXTRACTION] Could not report missing-base64 failure:', e.message);
     }
     return;
   }
-  console.log(`[EXTRACTION] Processing file: ${documentId}`);
+
+  console.log(`[EXTRACTION] Processing ${documentId} (${Math.round(documentBase64.length * 0.75 / 1024)}KB)`);
 
   try {
-    const image_base64 = fs.readFileSync(filePath).toString('base64');
-
     let aiRes;
     try {
       aiRes = await axios.post(
         `${DOCAI_URL}/extract`,
         {
-          image_base64,
+          image_base64: documentBase64,
           fields: FIELDS.map((f) => ({ name: f.name, question: f.question })),
         },
         { timeout: 600000 }
       );
     } catch (aiErr) {
-      // 503 = docai model still loading after cold start; retry with extra patience
       if (aiErr.response?.status === 503) {
         const retries = task.retries != null ? task.retries - 1 : 9;
         console.log(`[EXTRACTION] Task ${task.id} — DocAI model loading, retrying in 30s (retries left: ${retries})`);
@@ -94,7 +88,7 @@ async function processTask(task) {
 
     const raw = aiRes.data.fields;
 
-    // Parse amount: strip currency symbols and commas, convert to number
+    // Parse amount: strip currency symbols and commas
     if (raw.amount) {
       const stripped = String(raw.amount.value).replace(/[$,\s]/g, '');
       const num = parseFloat(stripped);
@@ -112,11 +106,9 @@ async function processTask(task) {
 
     const needsReview = lowConfidenceFields.length > 0;
 
-    // Normalize requestType to canonical lowercase values the DMN can match.
-    // Donut often reads a neighbouring field value (e.g. the amount "$250,000") instead
-    // of the type label. When that happens we fall back to keyword-matching the description.
-    const rawType    = String(raw.requestType?.value || '');
-    const descText   = String(raw.description?.value || '').toLowerCase();
+    // Normalize requestType to canonical lowercase values the DMN can match
+    const rawType  = String(raw.requestType?.value || '');
+    const descText = String(raw.description?.value || '').toLowerCase();
 
     const inferFromText = (text) => {
       if (/[il][o0]a[nm]|mortgage|borrow|lend/.test(text)) return 'loan';
@@ -127,32 +119,25 @@ async function processTask(task) {
 
     const normalizedType = (() => {
       const lc = rawType.toLowerCase().trim();
-
-      // Direct type-label match (includes OCR variants like "Ioan", "loam")
       const direct = inferFromText(lc);
       if (direct) return direct;
-
-      // Model extracted a dollar/numeric value for the wrong field — use description
       if (/^\$?[\d,]+\.?\d*$/.test(lc.replace(/\s/g, ''))) {
         return inferFromText(descText) ?? 'unknown';
       }
-
-      // Empty or unrecognised — last resort: description
       return inferFromText(descText) ?? (lc || 'unknown');
     })();
 
     await engine.post(`/external-task/${task.id}/complete`, {
       workerId: WORKER_ID,
       variables: {
-        extractedFields:      { value: JSON.stringify(raw),                        type: 'String' },
-        needsReview:          { value: needsReview,                                type: 'Boolean' },
-        lowConfidenceFields:  { value: JSON.stringify(lowConfidenceFields),         type: 'String' },
-        // Top-level vars so the DMN and subsequent workers can read them directly
-        requestType:          { value: normalizedType,                             type: 'String' },
-        amount:               { value: Number(raw.amount?.value       || 0),       type: 'Double' },
-        applicantName:        { value: String(raw.applicantName?.value || ''),     type: 'String' },
-        requestDate:          { value: String(raw.requestDate?.value   || ''),     type: 'String' },
-        description:          { value: String(raw.description?.value   || ''),     type: 'String' },
+        extractedFields:     { value: JSON.stringify(raw),                    type: 'String' },
+        needsReview:         { value: needsReview,                            type: 'Boolean' },
+        lowConfidenceFields: { value: JSON.stringify(lowConfidenceFields),    type: 'String' },
+        requestType:         { value: normalizedType,                         type: 'String' },
+        amount:              { value: Number(raw.amount?.value    || 0),      type: 'Double' },
+        applicantName:       { value: String(raw.applicantName?.value || ''), type: 'String' },
+        requestDate:         { value: String(raw.requestDate?.value  || ''),  type: 'String' },
+        description:         { value: String(raw.description?.value  || ''),  type: 'String' },
       },
     });
 
@@ -172,7 +157,8 @@ async function poll() {
       topics: [{
         topicName: TOPIC,
         lockDuration: LOCK_DURATION_MS,
-        variables: ['documentId', 'originalFilename'],
+        // Fetch documentBase64 so extraction worker never touches disk
+        variables: ['documentId', 'originalFilename', 'documentBase64'],
       }],
     });
     const tasks = res.data;

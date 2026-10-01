@@ -65,9 +65,9 @@ function ReviewPanel({ task, onSubmitted }) {
       <div className={styles.panelSplit}>
         {/* Left: form image */}
         <div className={styles.imagePane}>
-          {task.documentId ? (
+          {task.processInstanceId ? (
             <img
-              src={`/api/forms/document/${task.documentId}`}
+              src={`/api/forms/document/${task.processInstanceId}`}
               alt="Form"
               className={styles.formImage}
               onError={(e) => {
@@ -76,7 +76,7 @@ function ReviewPanel({ task, onSubmitted }) {
               }}
             />
           ) : null}
-          <div className={styles.noImage} style={{ display: task.documentId ? 'none' : 'flex' }}>
+          <div className={styles.noImage} style={{ display: task.processInstanceId ? 'none' : 'flex' }}>
             No image available
           </div>
           <p className={styles.imageCaption}>{task.originalFilename}</p>
