@@ -5,7 +5,7 @@ const path = require('path');
 const { FIELDS } = require('../config/formFields');
 
 const ENGINE = process.env.FLUXNOVA_URL || 'http://localhost:8080/engine-rest';
-const DOCAI_URL = process.env.DOCAI_SERVICE_URL || 'http://localhost:8000';
+const DOCAI_URL = process.env.DOCAI_URL || process.env.DOCAI_SERVICE_URL || 'http://localhost:8000';
 const CONFIDENCE_THRESHOLD = parseFloat(process.env.CONFIDENCE_THRESHOLD || '0.85');
 const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
 const WORKER_ID = 'extraction-worker-1';
