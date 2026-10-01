@@ -98,7 +98,7 @@ def run_docvqa(image: Image.Image, question: str) -> tuple[str, float]:
         outputs = _model.generate(
             pixel_values,
             decoder_input_ids=decoder_input_ids,
-            max_new_tokens=128,
+            max_new_tokens=20,
             pad_token_id=_processor.tokenizer.pad_token_id,
             eos_token_id=_processor.tokenizer.eos_token_id,
             bad_words_ids=[[_processor.tokenizer.unk_token_id]],

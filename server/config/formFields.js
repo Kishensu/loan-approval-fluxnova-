@@ -19,12 +19,7 @@ const FIELDS = [
   {
     name: 'requestDate',
     label: 'Request Date',
-    question: 'What is the request or submission date on this form?',
-  },
-  {
-    name: 'description',
-    label: 'Description',
-    question: 'What is the description, purpose, or reason stated on this form?',
+    question: 'What is the date on this form? Answer with the date only.',
   },
 ];
 
