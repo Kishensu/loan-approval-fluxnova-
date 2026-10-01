@@ -61,7 +61,7 @@ async function processTask(task) {
           image_base64,
           fields: FIELDS.map((f) => ({ name: f.name, question: f.question })),
         },
-        { timeout: 150000 }
+        { timeout: 600000 }
       );
     } catch (aiErr) {
       // 503 = docai model still loading after cold start; retry with extra patience
