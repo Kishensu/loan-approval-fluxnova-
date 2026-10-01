@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# poppler-utils for pdf2image; curl for Docker healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils \
     curl \
@@ -8,20 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install CPU-only PyTorch first so pip doesn't pull the larger GPU wheel later
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Pre-download model weights at build time so container startup is fast.
-# WARNING: downloads ~1.5 GB (Donut weights + tokenizer + torch deps).
-#          First build takes several minutes and requires internet access.
-RUN python -c "\
-import torch; \
-from transformers import DonutProcessor, VisionEncoderDecoderModel; \
-DonutProcessor.from_pretrained('naver-clova-ix/donut-base-finetuned-docvqa'); \
-VisionEncoderDecoderModel.from_pretrained('naver-clova-ix/donut-base-finetuned-docvqa', torch_dtype=torch.float16, low_cpu_mem_usage=True)"
 
 COPY . .
 
