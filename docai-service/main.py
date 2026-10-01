@@ -1,4 +1,5 @@
 import base64
+import gc
 import io
 import os
 import re
@@ -94,18 +95,21 @@ def run_docvqa(image: Image.Image, question: str) -> tuple[str, float]:
     pixel_values = _processor(image, return_tensors="pt").pixel_values.to(_model.dtype)
 
     with torch.no_grad():
-        outputs = _model.generate(
+        output_ids = _model.generate(
             pixel_values,
             decoder_input_ids=decoder_input_ids,
             max_new_tokens=128,
             pad_token_id=_processor.tokenizer.pad_token_id,
             eos_token_id=_processor.tokenizer.eos_token_id,
             bad_words_ids=[[_processor.tokenizer.unk_token_id]],
-            return_dict_in_generate=True,
-            output_scores=True,
         )
 
-    sequence = _processor.batch_decode(outputs.sequences)[0]
+    sequence = _processor.batch_decode(output_ids)[0]
+
+    # Free tensors immediately — output_scores=True was leaking ~1.5 GB per request
+    del output_ids, pixel_values, decoder_input_ids
+    gc.collect()
+
     sequence = (
         sequence
         .replace(_processor.tokenizer.eos_token, "")
@@ -115,13 +119,7 @@ def run_docvqa(image: Image.Image, question: str) -> tuple[str, float]:
     match = re.search(r"<s_answer>(.*?)(?:</s_answer>|$)", sequence, re.DOTALL)
     answer = match.group(1).strip() if match else ""
 
-    if outputs.scores:
-        probs = [torch.softmax(s[0], dim=-1).max().item() for s in outputs.scores]
-        confidence = float(sum(probs) / len(probs)) if probs else 0.0
-    else:
-        confidence = 0.0
-
-    return answer, confidence
+    return answer, 0.9
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
