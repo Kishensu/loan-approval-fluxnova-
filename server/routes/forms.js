@@ -45,7 +45,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         variables: {
           documentId:       { value: documentId,       type: 'String' },
           originalFilename: { value: originalFilename, type: 'String' },
-          documentBase64:   { value: documentBase64,   type: 'String' },
+          documentBase64:   { value: documentBase64,   type: 'Bytes'  },
           documentMimeType: { value: documentMimeType, type: 'String' },
         },
       }
