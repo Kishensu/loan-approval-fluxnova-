@@ -123,12 +123,33 @@ router.get('/status/:processInstanceId', async (req, res) => {
   }
 });
 
-// GET /api/forms/document/:processInstanceId — fetch image from Camunda variables
+// GET /api/forms/document/:processInstanceId — fetch image from Camunda variables.
+// Tries runtime API first (process still active = review stage), then history API
+// (process completed = results page). Bytes variables need the /data sub-resource.
 router.get('/document/:processInstanceId', async (req, res) => {
   const { processInstanceId } = req.params;
+
+  // ── 1. Runtime variable API (active process) ─────────────────────────────
   try {
-    // Look up the variable record to get its ID (value is null for Bytes type here)
-    const [listRes, mimeRes] = await Promise.all([
+    const [dataRes, mimeVarRes] = await Promise.all([
+      fluxnova.get(`/process-instance/${processInstanceId}/variables/documentBase64/data`, {
+        responseType: 'arraybuffer',
+      }),
+      fluxnova.get(`/process-instance/${processInstanceId}/variables/documentMimeType`),
+    ]);
+    const mime = mimeVarRes.data?.value || 'image/png';
+    const buf  = Buffer.from(dataRes.data);
+    res.set('Content-Type', mime);
+    res.set('Content-Length', buf.length);
+    res.set('Cache-Control', 'public, max-age=86400');
+    return res.send(buf);
+  } catch {
+    // Process may be completed — fall through to history API
+  }
+
+  // ── 2. History variable API (completed process) ───────────────────────────
+  try {
+    const [listRes, mimeListRes] = await Promise.all([
       fluxnova.get('/history/variable-instance', {
         params: { processInstanceId, variableName: 'documentBase64' },
       }),
@@ -140,9 +161,7 @@ router.get('/document/:processInstanceId', async (req, res) => {
     const varId = listRes.data?.[0]?.id;
     if (!varId) return res.status(404).json({ error: 'Document not found' });
 
-    const mime = mimeRes.data?.[0]?.value || 'image/png';
-
-    // Fetch raw bytes via the /data sub-resource (only endpoint that works for Bytes type)
+    const mime    = mimeListRes.data?.[0]?.value || 'image/png';
     const dataRes = await fluxnova.get(`/history/variable-instance/${varId}/data`, {
       responseType: 'arraybuffer',
     });
@@ -153,6 +172,7 @@ router.get('/document/:processInstanceId', async (req, res) => {
     res.set('Cache-Control', 'public, max-age=86400');
     return res.send(buf);
   } catch (err) {
+    console.error(`[DOCUMENT] Failed to serve ${processInstanceId}:`, err.message);
     return res.status(500).json({ error: err.message });
   }
 });
