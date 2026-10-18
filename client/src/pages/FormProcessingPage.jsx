@@ -141,6 +141,9 @@ function DropZone({ onFile }) {
         <button className={styles.sampleBtn} onClick={() => loadSample('handwritten-review.png')}>
           Handwritten form <span className={styles.sampleTag}>→ triggers review</span>
         </button>
+        <button className={styles.sampleBtn} onClick={() => loadSample('messy-handwritten.png')}>
+          Messy / damaged form <span className={styles.sampleTag}>→ worst case</span>
+        </button>
       </div>
     </div>
   );
