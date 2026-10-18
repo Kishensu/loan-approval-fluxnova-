@@ -56,15 +56,15 @@ async function deployWorkflows() {
   console.log(`[DEPLOY] processDir: ${processDir} exists=${fs.existsSync(processDir)}`);
   console.log(`[DEPLOY] workflowsDir: ${workflowsDir} exists=${fs.existsSync(workflowsDir)}`);
 
-  // Wait for Camunda to be ready (up to 2 min)
-  for (let attempt = 1; attempt <= 12; attempt++) {
+  // Wait for Camunda to be ready (up to 5 min — 2.0.5 can take longer to cold-start)
+  for (let attempt = 1; attempt <= 30; attempt++) {
     try {
       await axios.get(`${ENGINE}/engine`, { auth, timeout: 5000 });
       console.log('[DEPLOY] Camunda is ready.');
       break;
     } catch {
-      if (attempt === 12) {
-        console.error('[DEPLOY] Camunda not reachable after 2 min — skipping deployment.');
+      if (attempt === 30) {
+        console.error('[DEPLOY] Camunda not reachable after 5 min — skipping deployment.');
         return;
       }
       console.log(`[DEPLOY] Waiting for Camunda… (attempt ${attempt}/12)`);

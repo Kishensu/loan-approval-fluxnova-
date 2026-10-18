@@ -55,8 +55,10 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
       return res.status(503).json({ error: 'FluxNova engine not reachable' });
     }
-    const status = err.response?.status || 500;
-    return res.status(status).json({ error: err.response?.data?.message || err.message });
+    // Never propagate Camunda's status code (e.g. 404 = process not deployed yet)
+    const camundaMsg = err.response?.data?.message || err.message;
+    console.error(`[UPLOAD] Camunda error ${err.response?.status}: ${camundaMsg}`);
+    return res.status(502).json({ error: `Engine error: ${camundaMsg}` });
   }
 });
 
