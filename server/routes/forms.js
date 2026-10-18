@@ -127,21 +127,30 @@ router.get('/status/:processInstanceId', async (req, res) => {
 router.get('/document/:processInstanceId', async (req, res) => {
   const { processInstanceId } = req.params;
   try {
-    const varRes = await fluxnova.get('/history/variable-instance', {
-      params: { processInstanceId, variableName: 'documentBase64' },
-    });
-    const mimeRes = await fluxnova.get('/history/variable-instance', {
-      params: { processInstanceId, variableName: 'documentMimeType' },
-    });
+    // Look up the variable record to get its ID (value is null for Bytes type here)
+    const [listRes, mimeRes] = await Promise.all([
+      fluxnova.get('/history/variable-instance', {
+        params: { processInstanceId, variableName: 'documentBase64' },
+      }),
+      fluxnova.get('/history/variable-instance', {
+        params: { processInstanceId, variableName: 'documentMimeType' },
+      }),
+    ]);
 
-    const b64 = varRes.data?.[0]?.value;
+    const varId = listRes.data?.[0]?.id;
+    if (!varId) return res.status(404).json({ error: 'Document not found' });
+
     const mime = mimeRes.data?.[0]?.value || 'image/png';
 
-    if (!b64) return res.status(404).json({ error: 'Document not found' });
+    // Fetch raw bytes via the /data sub-resource (only endpoint that works for Bytes type)
+    const dataRes = await fluxnova.get(`/history/variable-instance/${varId}/data`, {
+      responseType: 'arraybuffer',
+    });
 
-    const buf = Buffer.from(b64, 'base64');
+    const buf = Buffer.from(dataRes.data);
     res.set('Content-Type', mime);
     res.set('Content-Length', buf.length);
+    res.set('Cache-Control', 'public, max-age=86400');
     return res.send(buf);
   } catch (err) {
     return res.status(500).json({ error: err.message });

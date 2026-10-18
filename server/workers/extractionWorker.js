@@ -42,14 +42,15 @@ async function processTask(task) {
     return;
   }
 
-  // Fetch documentBase64 directly from the process instance — Camunda does not
-  // reliably inline Bytes-type variables in fetchAndLock responses.
+  // Fetch raw image bytes via /data — Camunda Bytes variables return value:null
+  // from the standard variable endpoint; the /data sub-resource returns actual bytes.
   let documentBase64;
   try {
-    const varRes = await engine.get(
-      `/process-instance/${task.processInstanceId}/variables/documentBase64`
+    const dataRes = await engine.get(
+      `/process-instance/${task.processInstanceId}/variables/documentBase64/data`,
+      { responseType: 'arraybuffer' }
     );
-    documentBase64 = varRes.data?.value;
+    documentBase64 = Buffer.from(dataRes.data).toString('base64');
   } catch (err) {
     console.error(`[EXTRACTION] Could not fetch documentBase64 for ${documentId}: ${err.message}`);
   }
