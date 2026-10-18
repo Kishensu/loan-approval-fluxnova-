@@ -11,6 +11,11 @@ export const claimTask = (taskId) => api.post(`/tasks/${taskId}/claim`);
 export const getOpsStats = () => api.get('/ops/stats');
 export const getProcessHistory = (options = {}) => api.get('/ops/history', { params: options });
 
+// Returns an absolute URL for a form document image so <img src> works
+// even when the frontend (Netlify) is on a different origin than the API (Railway).
+export const getDocumentUrl = (processInstanceId) =>
+  `${import.meta.env.VITE_API_URL || '/api'}/forms/document/${processInstanceId}`;
+
 // Intelligent Form Processing
 export const uploadForm = (file) => {
   const fd = new FormData();

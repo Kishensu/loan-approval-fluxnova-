@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { getReviewTasks, submitReview } from '../services/api';
+import { getReviewTasks, submitReview, getDocumentUrl } from '../services/api';
 import { FORM_FIELDS } from '../config/formFields';
 import styles from './ReviewQueuePage.module.css';
 
@@ -67,7 +67,7 @@ function ReviewPanel({ task, onSubmitted }) {
         <div className={styles.imagePane}>
           {task.processInstanceId ? (
             <img
-              src={`/api/forms/document/${task.processInstanceId}`}
+              src={getDocumentUrl(task.processInstanceId)}
               alt="Form"
               className={styles.formImage}
               onError={(e) => {
