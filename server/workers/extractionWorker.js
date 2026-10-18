@@ -34,8 +34,7 @@ async function reportFailure(task, err) {
 
 async function processTask(task) {
   const vars = task.variables || {};
-  const documentId     = vars.documentId?.value;
-  const documentBase64 = vars.documentBase64?.value;
+  const documentId = vars.documentId?.value;
 
   if (!documentId) {
     console.error('[EXTRACTION] Task missing documentId variable');
@@ -43,17 +42,29 @@ async function processTask(task) {
     return;
   }
 
+  // Fetch documentBase64 directly from the process instance — Camunda does not
+  // reliably inline Bytes-type variables in fetchAndLock responses.
+  let documentBase64;
+  try {
+    const varRes = await engine.get(
+      `/process-instance/${task.processInstanceId}/variables/documentBase64`
+    );
+    documentBase64 = varRes.data?.value;
+  } catch (err) {
+    console.error(`[EXTRACTION] Could not fetch documentBase64 for ${documentId}: ${err.message}`);
+  }
+
   if (!documentBase64) {
-    console.error(`[EXTRACTION] Task missing documentBase64 for ${documentId} — old task before base64 migration?`);
+    console.error(`[EXTRACTION] documentBase64 missing for ${documentId} (processInstance: ${task.processInstanceId})`);
     try {
       await engine.post(`/external-task/${task.id}/failure`, {
         workerId: WORKER_ID,
-        errorMessage: `Missing documentBase64 for ${documentId}`,
+        errorMessage: `documentBase64 not found in process variables for ${documentId}`,
         retries: 0,
         retryTimeout: 0,
       });
     } catch (e) {
-      console.error('[EXTRACTION] Could not report missing-base64 failure:', e.message);
+      console.error('[EXTRACTION] Could not report failure:', e.message);
     }
     return;
   }
@@ -157,8 +168,7 @@ async function poll() {
       topics: [{
         topicName: TOPIC,
         lockDuration: LOCK_DURATION_MS,
-        // Fetch documentBase64 so extraction worker never touches disk
-        variables: ['documentId', 'originalFilename', 'documentBase64'],
+        variables: ['documentId', 'originalFilename'],
       }],
     });
     const tasks = res.data;

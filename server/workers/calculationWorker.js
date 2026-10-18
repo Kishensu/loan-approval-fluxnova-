@@ -45,13 +45,9 @@ async function processTask(task) {
   const interestRate = Number(vars.interestRate?.value  || 0);
   const feePercent   = Number(vars.feePercent?.value    || 0);
 
-  // The extraction worker stores amount inside extractedFields JSON;
-  // reviewer may have corrected it, so always read from extractedFields.
-  let amount = 0;
-  try {
-    const fields = JSON.parse(vars.extractedFields?.value || '{}');
-    amount = Number(fields.amount?.value || 0);
-  } catch {}
+  // Read amount from the top-level variable (set by extraction worker and
+  // overwritten by the review route when a reviewer corrects it).
+  const amount = Number(vars.amount?.value ?? 0);
 
   let calculationResult;
 
