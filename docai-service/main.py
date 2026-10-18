@@ -74,7 +74,7 @@ def health():
 def extract(req: ExtractRequest):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY not set")
+        raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY not configured on this service")
 
     try:
         jpeg_bytes = to_jpeg(req.image_base64, req.media_type)

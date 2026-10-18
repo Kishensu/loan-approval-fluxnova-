@@ -81,20 +81,12 @@ async function processTask(task) {
           image_base64: documentBase64,
           fields: FIELDS.map((f) => ({ name: f.name, question: f.question })),
         },
-        { timeout: 600000 }
+        { timeout: 60000 }
       );
     } catch (aiErr) {
-      if (aiErr.response?.status === 503) {
-        const retries = task.retries != null ? task.retries - 1 : 9;
-        console.log(`[EXTRACTION] Task ${task.id} — DocAI model loading, retrying in 30s (retries left: ${retries})`);
-        await engine.post(`/external-task/${task.id}/failure`, {
-          workerId: WORKER_ID,
-          errorMessage: 'DocAI model not ready yet — cold start warm-up',
-          retries,
-          retryTimeout: 30000,
-        });
-        return;
-      }
+      const status = aiErr.response?.status;
+      const detail = aiErr.response?.data?.detail || aiErr.message;
+      console.error(`[EXTRACTION] DocAI error ${status}: ${detail}`);
       throw aiErr;
     }
 
